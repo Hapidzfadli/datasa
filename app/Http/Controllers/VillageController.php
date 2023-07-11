@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 class VillageController extends Controller
 {
+
+
     public function index()
     {
         // Tampilkan daftar desa
@@ -14,10 +16,11 @@ class VillageController extends Controller
         return response()->json($villages);
     }
 
-    public function create()
+    public function create(Request $request)
     {
         // Tampilkan form untuk membuat desa baru
-        // Anda dapat menyesuaikan logika ini sesuai dengan kebutuhan Anda
+        $data = $request->all();
+        // Lakukan sesuatu dengan data
         return response()->json('Create form');
     }
 
@@ -25,7 +28,9 @@ class VillageController extends Controller
     {
         // Simpan desa baru ke dalam basis data
         Village::create($request->all());
-        return response()->json('Village created', 201);
+        $response = response()->json('Village created', 201);
+        $response->header('X-CSRF-TOKEN', $request->session()->token());
+        return $response;
     }
 
     public function show($id)
@@ -55,6 +60,7 @@ class VillageController extends Controller
         // Hapus desa berdasarkan ID
         $village = Village::findOrFail($id);
         $village->delete();
+
         return response()->json('Village deleted');
     }
 }
